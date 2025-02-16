@@ -25,16 +25,22 @@
         @apply bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600;
       }
       .cart-box {
-        @apply fixed top-5 right-5 bg-white shadow-md p-4 rounded-md w-64;
+        @apply fixed top-5 right-5 bg-white shadow-lg p-5 rounded-lg w-72 border border-gray-200;
       }
       .cart-item {
-        @apply flex justify-between items-center mb-3;
+        @apply flex justify-between items-center mb-4 p-3 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100;
+      }
+      .cart-item span {
+        @apply text-gray-700 font-medium;
       }
       .cart-quantity {
-        @apply flex items-center space-x-2;
+        @apply flex items-center space-x-3;
       }
       .cart-button {
-        @apply bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600;
+        @apply bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 transition-all duration-300 ease-in-out;
+      }
+      .cart-remove-button {
+        @apply mt-5 bg-blue-500 text-white px-5 py-2 rounded-lg w-full text-lg font-semibold hover:bg-blue-600 transition-all duration-300 ease-in-out; ;
       }
       .admin-form {
         @apply bg-white p-5 rounded-md shadow-md max-w-md mx-auto my-5;
@@ -46,7 +52,7 @@
       .admin-form button {
         @apply bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600;
       }
-      /* @screen sm {
+       @screen sm {
         .product-grid {
           @apply grid grid-cols-1 gap-5;
         }
@@ -60,7 +66,7 @@
         .product-grid {
           @apply grid grid-cols-3 gap-5;
         }
-      } */
+      } 
     </style>
   </head>
   <body class="bg-gray-100 p-5 font-sans leading-6">
