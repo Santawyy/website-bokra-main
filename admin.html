@@ -5,123 +5,75 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        .admin-form {
-            background-color: white;
-            padding: 1.5rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            max-width: 56rem;
-            margin: 1.5rem auto;
-        }
-        .admin-form input,
-        .admin-form textarea,
-        .admin-form select {
-            width: 100%;
-            padding: 0.5rem 1rem;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.375rem;
-            margin-bottom: 1rem;
-        }
-        .admin-form input:focus,
-        .admin-form textarea:focus,
-        .admin-form select:focus {
-            outline: none;
-            ring: 2px;
-            ring-color: #2563eb;
-        }
-        .alert {
-            position: fixed;
-            top: 1rem;
-            right: 1rem;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            color: white;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-        .alert.success { background-color: #10b981; }
-        .alert.error { background-color: #ef4444; }
-        .hidden { display: none; }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        table th, table td {
-            padding: 0.75rem;
-            text-align: left;
-            border: 1px solid #e5e7eb;
-        }
-        table th {
-            background-color: #f9fafb;
-            font-weight: bold;
-        }
-        table tr:nth-child(even) {
-            background-color: #f9fafb;
-        }
-        .order-status {
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.375rem;
-            font-weight: bold;
-        }
-        .order-status.pending { background-color: #fbbf24; color: white; }
-        .order-status.completed { background-color: #10b981; color: white; }
-        .order-status.cancelled { background-color: #ef4444; color: white; }
-    </style>
+    <script>tailwind.config = {darkMode: "class"};</script>
 </head>
-<body class="bg-gray-100 min-h-screen p-8">
+<body class="bg-gray-100 dark:bg-black text-gray-900 dark:text-gray-200 min-h-screen p-8">
     <div class="container mx-auto">
         <div class="flex justify-between items-center mb-6">
-            <h1 class="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+            <h1 class="text-3xl font-bold">Admin Dashboard</h1>
             <div class="flex gap-4">
-                <a href="index.html" class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700">
-                    Back to Store
-                </a>
-                <button onclick="toggleAddForm()" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
-                    Add New Product
-                </button>
+                <a href="forms.html" class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700">Back to Store</a>
+                <button id="dark-mode-toggle" class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700">🌙 Dark Mode</button>
+                <button onclick="toggleAddForm()" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Add New Product</button>
             </div>
         </div>
 
-        <div id="productForm" class="admin-form hidden">
+        <div id="productForm" class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md max-w-2xl mx-auto hidden">
             <h2 id="formTitle" class="text-2xl font-bold mb-4">Add New Product</h2>
-            <form id="productManageForm" onsubmit="handleSubmit(event)">
-                <input type="hidden" id="productId">
-                <input type="text" id="productName" placeholder="Product Name" required>
-                <input type="text" id="productImage" placeholder="Image URL" required>
-                <textarea id="productDescription" placeholder="Product Description" required></textarea>
-                <input type="number" id="productPrice" placeholder="Price" required>
-                <select id="productType" required>
-                    <option value="">Select Type</option>
-                    <option value="Tops">Tops</option>
-                    <option value="Bottoms">Bottoms</option>
-                    <option value="Outerwear">Outerwear</option>
-                    <option value="Footwear">Footwear</option>
-                </select>
+            <form id="productManageForm">
+                <input type="text" id="productName" placeholder="Product Name" required class="w-full p-2 border rounded mb-4">
+                <input type="number" id="productPrice" placeholder="Price" required class="w-full p-2 border rounded mb-4">
                 <div class="flex gap-4">
-                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md">Save Product</button>
+                    <button type="submit" id="saveProduct" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+                        Save Product
+                    </button>
                 </div>
             </form>
         </div>
-
-        <div class="admin-form mt-8">
-            <h2 class="text-2xl font-bold mb-4">Order History</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Order ID</th>
-                        <th>Customer Name</th>
-                        <th>Product</th>
-                        <th>Quantity</th>
-                        <th>Date</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody id="orderHistoryTable">
-                </tbody>
-            </table>
+        
         </div>
 
-        <div id="alert" class="alert hidden">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mt-8">
+            <h2 class="text-2xl font-bold mb-4">Order History</h2>
+            <table class="w-full border-collapse">
+                <thead>
+                    <tr class="bg-gray-100 dark:bg-gray-700">
+                        <th class="p-3 text-left border dark:border-gray-600">Order ID</th>
+                        <th class="p-3 text-left border dark:border-gray-600">Customer Name</th>
+                        <th class="p-3 text-left border dark:border-gray-600">Product</th>
+                        <th class="p-3 text-left border dark:border-gray-600">Quantity</th>
+                        <th class="p-3 text-left border dark:border-gray-600">Date</th>
+                        <th class="p-3 text-left border dark:border-gray-600">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="orderHistoryTable"></tbody>
+            </table>
+        </div>
+        <div id="admin-product-list" class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mt-8">
+            <h2 class="text-2xl font-bold mb-4">Manage Products</h2>
+            <table class="w-full border-collapse">
+                <thead>
+                    <tr class="bg-gray-100 dark:bg-gray-700">
+                        <th class="p-3 text-left border dark:border-gray-600">Product Name</th>
+                        <th class="p-3 text-left border dark:border-gray-600">Price</th>
+                        <th class="p-3 text-left border dark:border-gray-600">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="productTableBody"></tbody>
+            </table>
+        </div>
+        
+
+
+        <div class="flex flex-wrap justify-center gap-8 mt-8">
+            <div id="pie-chart-container" class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 w-full sm:w-96 flex flex-col items-center">
+                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Sales Distribution</h3>
+                <div id="pie-chart"></div>
+            </div>
+            <div id="bar-chart-container" class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 w-full sm:w-[500px] flex flex-col items-center">
+                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Sales Overview</h3>
+                <div id="bar-chart"></div>
+            </div>
         </div>
     </div>
 
@@ -136,37 +88,29 @@
 
         function renderOrderHistory() {
             const orderHistoryTable = document.getElementById("orderHistoryTable");
-            orderHistoryTable.innerHTML = ''; 
+            orderHistoryTable.innerHTML = '';
 
             orders.forEach(order => {
                 const row = document.createElement("tr");
 
                 row.innerHTML = `
-                    <td>${order.id}</td>
-                    <td>${order.customerName}</td>
-                    <td>${order.product}</td>
-                    <td>${order.quantity}</td>
-                    <td>${order.date}</td>
-                    <td>
-                        <span class="order-status ${getOrderStatusClass(order.status)}">${order.status}</span>
+                    <td class="p-3 border">${order.id}</td>
+                    <td class="p-3 border">${order.customerName}</td>
+                    <td class="p-3 border">${order.product}</td>
+                    <td class="p-3 border">${order.quantity}</td>
+                    <td class="p-3 border">${order.date}</td>
+                    <td class="p-3 border">
+                        <span class="px-2 py-1 rounded text-white font-bold 
+                            ${order.status === 'Pending' ? 'bg-yellow-500' : 
+                               order.status === 'Completed' ? 'bg-green-500' : 
+                               'bg-red-500'}">
+                            ${order.status}
+                        </span>
                     </td>
                 `;
 
                 orderHistoryTable.appendChild(row);
             });
-        }
-
-        function getOrderStatusClass(status) {
-            switch (status) {
-                case 'Pending':
-                    return 'pending';
-                case 'Completed':
-                    return 'completed';
-                case 'Cancelled':
-                    return 'cancelled';
-                default:
-                    return '';
-            }
         }
 
         function toggleAddForm() {
@@ -186,19 +130,19 @@
             const productType = document.getElementById("productType").value;
 
             if (productName && productImage && productDescription && productPrice && productType) {
-                showAlert('Product added successfully!', 'success');
+                showAlert('Product added successfully!', 'bg-green-500');
                 document.getElementById("productManageForm").reset();
                 toggleAddForm(); 
             } else {
-                showAlert('Please fill out all fields!', 'error');
+                showAlert('Please fill out all fields!', 'bg-red-500');
             }
         }
 
-        function showAlert(message, type) {
+        function showAlert(message, color) {
             const alert = document.getElementById("alert");
             alert.textContent = message;
             alert.classList.remove("hidden");
-            alert.classList.add(type);
+            alert.classList.add(color);
 
             setTimeout(() => {
                 alert.classList.add("hidden");
@@ -207,5 +151,256 @@
 
         renderOrderHistory();
     </script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script>
+        const data = [
+            { label: "Tops", value: 30 },
+            { label: "Bottoms", value: 20 },
+            { label: "Outerwear", value: 25 },
+            { label: "Footwear", value: 25 }
+        ];
+    
+        const width = 400, height = 400, radius = Math.min(width, height) / 2;
+        const svg = d3.select("#pie-chart").append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .append("g")
+            .attr("transform", `translate(${width / 2},${height / 2})`);
+    
+        const color = d3.scaleOrdinal(["#1E90FF", "#32CD32", "#FFD700", "#FF4500"]);
+        const pie = d3.pie().value(d => d.value);
+        const arc = d3.arc().innerRadius(50).outerRadius(radius);
+        const arcs = svg.selectAll("arc").data(pie(data)).enter().append("g");
+    
+    arcs.append("path")
+    .attr("fill", d => color(d.data.label))
+    .attr("d", arc)
+    .each(function(d) { this._current = { startAngle: 0, endAngle: 0 }; }) 
+    .transition()
+    .duration(1000)
+    .attrTween("d", function(d) {
+        const i = d3.interpolate(this._current, d);
+        this._current = i(1); 
+        return function(t) { return arc(i(t)); };
+    });
+
+arcs.selectAll("path")
+    .on("mouseover", function(event, d) {
+        d3.select(this)
+            .transition()
+            .duration(200)
+            .attr("transform", "scale(1.1)")
+            .style("opacity", 0.8);
+    })
+    .on("mouseout", function(event, d) {
+        d3.select(this)
+            .transition()
+            .duration(200)
+            .attr("transform", "scale(1)")
+            .style("opacity", 1);
+    });
+    
+        arcs.append("text")
+            .attr("transform", d => `translate(${arc.centroid(d)})`)
+            .attr("text-anchor", "middle")
+            .attr("font-size", "14px")
+            .attr("fill", "white")
+            .text(d => d.data.label);
+    
+        const barData = [
+            { hour: "12 AM", count: 5 },
+            { hour: "1 AM", count: 3 },
+            { hour: "2 AM", count: 6 },
+            { hour: "3 AM", count: 2 },
+            { hour: "4 AM", count: 4 },
+        ];
+    
+        const barSvg = d3.select("#bar-chart").append("svg")
+            .attr("width", 500)
+            .attr("height", 350)
+            .append("g")
+            .attr("transform", "translate(40,20)");
+    
+        const x = d3.scaleBand().domain(barData.map(d => d.hour)).range([0, 400]).padding(0.1);
+        const y = d3.scaleLinear().domain([0, d3.max(barData, d => d.count)]).nice().range([280, 0]);
+        
+     const bars = barSvg.selectAll(".bar")
+    .data(barData)
+    .enter().append("rect")
+    .attr("class", "bar cursor-pointer")
+    .attr("x", d => x(d.hour))
+    .attr("y", 280) 
+    .attr("width", x.bandwidth())
+    .attr("height", 0) 
+    .attr("fill", "#4C9CFF")
+    .transition()
+    .duration(1000)
+    .attr("y", d => y(d.count)) 
+    .attr("height", d => 280 - y(d.count)); 
+
+
+    barSvg.selectAll("rect")
+    .on("mouseover", function (event, d) {
+        d3.select(this)
+            .transition()
+            .duration(200)
+            .attr("fill", "#2563EB") 
+            .attr("y", y(d.count) - 5) 
+            .attr("height", (280 - y(d.count)) + 5);
+    })
+    .on("mouseout", function (event, d) {
+        d3.select(this)
+            .transition()
+            .duration(200)
+            .attr("fill", "#4C9CFF") 
+            .attr("y", y(d.count)) 
+            .attr("height", 280 - y(d.count)); 
+    });
+    barSvg.selectAll(".bar-label")
+    .data(barData)
+    .enter().append("text")
+    .attr("class", "bar-label text-xs font-bold fill-gray-700")
+    .attr("x", d => x(d.hour) + x.bandwidth() / 2)
+    .attr("y", 280) 
+    .attr("text-anchor", "middle")
+    .attr("opacity", 0)
+    .transition()
+    .duration(1000)
+    .attr("y", d => y(d.count) - 10) 
+    .attr("opacity", 1) 
+    .text(d => d.count); 
+    
+        barSvg.append("g")
+            .attr("transform", "translate(0,280)")
+            .call(d3.axisBottom(x));
+    
+        barSvg.append("g").call(d3.axisLeft(y));
+    
+        barSvg.selectAll(".text")
+            .data(barData)
+            .enter().append("text")
+            .attr("x", d => x(d.hour) + x.bandwidth() / 2)
+            .attr("y", d => y(d.count) - 10)
+            .attr("text-anchor", "middle")
+            .attr("fill", "white")
+            .text(d => d.count);
+
+
+            const toggleButton = document.getElementById("dark-mode-toggle");
+        const body = document.body;
+
+        if (localStorage.getItem("darkMode") === "enabled") {
+            body.classList.add("dark");
+            toggleButton.textContent = "☀️ Light Mode";
+        }
+
+        toggleButton.addEventListener("click", () => {
+            body.classList.toggle("dark");
+
+            if (body.classList.contains("dark")) {
+                localStorage.setItem("darkMode", "enabled");
+                toggleButton.textContent = "☀️ Light Mode";
+            } else {
+                localStorage.setItem("darkMode", "disabled");
+                toggleButton.textContent = "🌙 Dark Mode";
+            }
+        });
+        let adminProducts = [
+    { name: "T-Shirt", price: "$20" },
+    { name: "Jeans", price: "$40" },
+    { name: "Jacket", price: "$120" },
+    { name: "Sweater", price: "$50" },
+    { name: "Sneakers", price: "$80" }
+];
+
+let editingIndex = null; // Track the product being edited
+
+function renderAdminProducts() {
+    const productTableBody = document.getElementById("productTableBody");
+    productTableBody.innerHTML = "";
+
+    adminProducts.forEach((product, index) => {
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td class="p-3 border">${product.name}</td>
+            <td class="p-3 border">${product.price}</td>
+            <td class="p-3 border flex gap-2">
+                <button class="edit-product bg-yellow-500 text-white px-3 py-1 rounded-md hover:bg-yellow-600 transition"
+                    data-index="${index}">
+                    ✏️ Edit
+                </button>
+                <button class="delete-product bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-700 transition"
+                    data-index="${index}">
+                    ❌ Delete
+                </button>
+            </td>
+        `;
+
+        productTableBody.appendChild(row);
+    });
+
+    document.querySelectorAll(".edit-product").forEach(button => {
+        button.addEventListener("click", (event) => {
+            const index = event.target.getAttribute("data-index");
+            loadProductForEditing(index);
+        });
+    });
+
+    document.querySelectorAll(".delete-product").forEach(button => {
+        button.addEventListener("click", (event) => {
+            const index = event.target.getAttribute("data-index");
+            confirmDeleteProduct(index);
+        });
+    });
+}
+
+function loadProductForEditing(index) {
+    const product = adminProducts[index];
+
+    document.getElementById("productName").value = product.name;
+    document.getElementById("productPrice").value = product.price.replace("$", "");
+    document.getElementById("formTitle").textContent = "Edit Product";
+    editingIndex = index;
+
+    document.getElementById("productForm").classList.remove("hidden");
+}
+
+function confirmDeleteProduct(index) {
+    const productName = adminProducts[index].name;
+    const confirmed = confirm(`Are you sure you want to delete "${productName}"?`);
+    
+    if (confirmed) {
+        adminProducts.splice(index, 1);
+        renderAdminProducts();
+    }
+}
+
+document.getElementById("productManageForm").addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const productName = document.getElementById("productName").value;
+    const productPrice = `$${document.getElementById("productPrice").value}`;
+
+    if (editingIndex !== null) {
+        adminProducts[editingIndex] = { name: productName, price: productPrice };
+        editingIndex = null;
+        document.getElementById("formTitle").textContent = "Add New Product";
+    } else {
+        adminProducts.push({ name: productName, price: productPrice });
+    }
+
+    document.getElementById("productManageForm").reset();
+    document.getElementById("productForm").classList.add("hidden");
+    renderAdminProducts();
+});
+
+document.addEventListener("DOMContentLoaded", renderAdminProducts);
+
+
+
+
+    </script>
+    
 </body>
 </html>

@@ -7,74 +7,22 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <style type="text/tailwindcss">
-        body {
-            @apply bg-gray-100 font-sans;
-        }
-        header {
-            @apply bg-white shadow-md sticky top-0 z-50;
-        }
-        .header-link {
-            @apply text-lg font-medium text-gray-700 hover:text-blue-600 transition-colors duration-300 ease-in-out;
-        }
-        .header-link:hover {
-            color: #007BFF;
-        }
-        .search-bar {
-            @apply px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-600 text-lg;
-        }
-        .container {
-            @apply mx-auto px-5;
-        }
-        .product-grid {
-            @apply grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4;
-        }
-        .product-card {
-            @apply bg-white rounded-lg shadow-lg overflow-hidden transform transition duration-300 ease-in-out hover:scale-105 hover:shadow-2xl;
-        }
-        .product-card img {
-            @apply w-full h-60 object-cover mb-4;
-        }
-        .product-title {
-            @apply text-xl font-semibold text-gray-800 mb-2;
-        }
-        .product-description {
-            @apply text-gray-600 text-sm mb-3 px-3;
-        }
-        .product-price {
-            @apply text-lg font-bold text-gray-900 mb-3 px-3;
-        }
-        .add-to-cart-button {
-            @apply w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors duration-300 ease-in-out;
-        }
-        .cart-box {
-            @apply fixed top-5 right-5 bg-white shadow-xl p-6 rounded-lg w-80 border border-gray-200;
-        }
-        .cart-item {
-            @apply flex justify-between items-center mb-4 p-3 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors duration-300 ease-in-out;
-        }
-        .cart-button {
-            @apply bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 transition-colors duration-300 ease-in-out;
-        }
-        .cart-remove-button {
-            @apply mt-5 bg-red-600 text-white px-5 py-2 rounded-lg w-full text-lg font-semibold hover:bg-red-700 transition-colors duration-300 ease-in-out;
-        }
-        .admin-form {
-            @apply bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto my-6;
-        }
-        .admin-form input,
-        .admin-form textarea {
-            @apply w-full px-4 py-2 border border-gray-300 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-blue-600;
-        }
-        .admin-form button {
-            @apply bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors duration-300 ease-in-out;
-        }
-        .charts-container {
-            @apply flex justify-between mt-8;
-        }
-        .pie-chart-container,
-        .bar-chart-container {
-            @apply bg-white p-6 rounded-lg shadow-lg w-1/2;
-        }
+        body { @apply bg-gradient-to-br from-gray-900 to-gray-800 text-white min-h-screen; }
+        header { @apply bg-gray-900 shadow-lg sticky top-0 z-50 p-4 flex justify-between items-center border-b border-gray-700; }
+        .header-links { @apply flex space-x-6; }
+        .header-link { @apply text-lg font-medium text-gray-300 hover:text-blue-400 transition-colors duration-300; }
+        .search-bar { @apply px-4 py-2 bg-gray-800 text-white border border-gray-700 rounded-md focus:ring-2 focus:ring-blue-500; }
+        .product-grid { @apply grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mt-6; }
+        .product-card { @apply bg-white bg-opacity-10 rounded-lg shadow-xl p-4 transform transition duration-300 hover:scale-105 hover:shadow-2xl; }
+        .product-card img { @apply w-full h-60 object-cover rounded-md mb-4; }
+        .product-title { @apply text-xl font-semibold text-white mb-2; }
+        .product-description { @apply text-gray-300 text-sm mb-3; }
+        .product-price { @apply text-lg font-bold text-blue-400 mb-3; }
+        .add-to-cart-button { @apply w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-all; }
+        .cart-box { @apply fixed top-5 right-5 bg-gray-900 shadow-xl p-6 rounded-lg w-80 border border-gray-700; }
+        .cart-item { @apply flex justify-between items-center mb-4 p-3 bg-gray-800 border border-gray-700 rounded-lg hover:bg-gray-700 transition-all; }
+        .cart-button { @apply bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 transition-all; }
+        .cart-remove-button { @apply mt-5 bg-red-600 text-white px-5 py-2 rounded-lg w-full text-lg font-semibold hover:bg-red-700 transition-all; }
     </style>
 </head>
 <body class="bg-gray-50 p-5 font-sans leading-6">
@@ -92,28 +40,52 @@
                 placeholder="Search.."
                 class="search-bar"
             />
+            <button id="cart-button" class="relative bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+                🛒 Cart <span id="cart-count" class="absolute top-0 right-0 bg-red-500 text-white text-xs px-2 py-1 rounded-full hidden">0</span>
+            </button>
+            <button id="toggle-theme" class="toggle-theme">Dark Mode</button>
         </div>
     </header>
     <main class="container mx-auto mt-8">
+        <div class="flex flex-wrap justify-between items-center mb-6">
+            <select id="categoryFilter" class="p-2 border border-gray-600 bg-white dark:bg-gray-800 dark:text-white text-gray-900 rounded-md focus:ring-2 focus:ring-blue-500">
+                <option value="all">All Categories</option>
+                <option value="Tops">Tops</option>
+                <option value="Bottoms">Bottoms</option>
+                <option value="Outerwear">Outerwear</option>
+                <option value="Footwear">Footwear</option>
+            </select>
+        
+            <select id="sortFilter" class="p-2 border border-gray-600 bg-white dark:bg-gray-800 dark:text-white text-gray-900 rounded-md focus:ring-2 focus:ring-blue-500">
+                <option value="default">Sort By</option>
+                <option value="priceLow">Price: Low to High</option>
+                <option value="priceHigh">Price: High to Low</option>
+                <option value="nameAZ">Name: A to Z</option>
+                <option value="nameZA">Name: Z to A</option>
+            </select>
+        </div>
+        
+        
         <section class="product-grid" id="product-grid"></section>
         <div class="charts-container">
             <div class="pie-chart-container">
-                <h2 class="text-2xl font-bold mb-4">Product Types Distribution</h2>
-                <div id="pie-chart"></div>
+                <!-- <h2 class="text-2xl font-bold mb-4">Product Types Distribution</h2> -->
+                <!-- <div id="pie-chart"></div> -->
             </div>
             <div class="bar-chart-container">
-                <h2 class="text-2xl font-bold mb-4">Purchases per Hour</h2>
-                <div id="bar-chart"></div>
+                <!-- <h2 class="text-2xl font-bold mb-4">Purchases per Hour</h2> -->
+                <!-- <div id="bar-chart"></div> -->
             </div>
         </div>
     </main>
-    <div id="cart-box" class="cart-box hidden">
-        <h3 class="text-lg font-bold mb-4">Cart</h3>
+    <div id="cart-box" class="fixed top-5 right-5 bg-white dark:bg-gray-900 shadow-lg p-6 rounded-lg w-80 border border-gray-300 dark:border-gray-700 hidden">
+        <h3 class="text-lg font-bold mb-4">Shopping Cart</h3>
         <div id="cart-items"></div>
-        <button
-            id="checkout"
-            class="bg-blue-600 text-white px-4 py-2 rounded-md mt-4 hover:bg-blue-700 transition-colors duration-300 ease-in-out"
-        >
+        
+        <button id="clear-cart" class="w-full bg-red-600 text-white px-4 py-2 rounded-md mt-4 hover:bg-red-700">
+            Clear Cart
+        </button>
+        <button id="checkout" class="w-full bg-green-600 text-white px-4 py-2 rounded-md mt-2 hover:bg-green-700">
             Checkout
         </button>
     </div>
@@ -155,6 +127,26 @@
     </section>
 
     <script>
+document.getElementById("toggle-theme").addEventListener("click", function () {
+    document.body.classList.toggle("bg-gray-100");
+    document.body.classList.toggle("text-black");
+});
+document.getElementById("searchBar").addEventListener("input", function () {
+    const value = this.value.toLowerCase();
+    document.querySelectorAll(".product-card").forEach(card => {
+        const title = card.querySelector(".product-title");
+        if (title) {
+            const title = title.textContent.toLowerCase();
+            card.style.display = titleTex.includes(term) ? "block" : "none";
+        }
+    });
+    
+});
+
+
+ 
+
+
       document.addEventListener("DOMContentLoaded", function () {
           const searchBar = document.getElementById("searchBar");
           const productGrid = document.getElementById("product-grid");
@@ -167,12 +159,65 @@
           const productList = document.getElementById("product-list");
   
           let products = [
-              { name: "T-Shirt", image: "https://media.canva.com/v2/mockup-template-rasterize/color0:171618/image0:s3%3A%2F%2Ftemplate.canva.com%2FEAFxZJHbX_A%2F1%2F0%2F933w--inuARME-hI.png/mockuptemplateid:FAqieNuus/size:L?csig=AAAAAAAAAAAAAAAAAAAAAJhD0tbnE14n0VqxoAzsNdltuuwOy-nL34Ri0nmNxpvN&exp=1739739670&osig=AAAAAAAAAAAAAAAAAAAAAGz2oCqBPu7lc1Z0LKv9E2qzsQiLtRfn0TuM0zKCVi_X&seoslug=black-and-orange-typography-never-give-up-stay-strong-t-shirt&signer=marketplace-rpc", description: "Cotton T-shirt", price: "$20", type: "Tops" },
+              { name: "T-Shirt", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSceTnrMg20WHpG8ASvrafLLMuDYUw28Tsegg&s   ", description: "Cotton T-shirt", price: "$20", type: "Tops" },
               { name: "Jeans", image: "https://images.napali.app/global/element-products/all/default/xlarge/eljdp00106_element,f_bnt0_frt1.jpg", description: "Slim fit jeans", price: "$40", type: "Bottoms" },
               { name: "Jacket", image: "https://m.media-amazon.com/images/I/61FRgVZBhzL._AC_UY1000_.jpg", description: "Leather jacket", price: "$120", type: "Outerwear" },
               { name: "Sweater", image: "https://images-cdn.ubuy.co.in/654ec7dd9fb75b0f9d500283-aelfric-eden-cable-knit-sweater-women.jpg", description: "Wool sweater", price: "$50", type: "Tops" },
-              { name: "Sneakers", image: "https://cdn.thewirecutter.com/wp-content/media/2024/05/white-sneaker-2048px-9320.jpg?auto=webp&quality=75&crop=1.91:1&width=1200", description: "Running shoes", price: "$80", type: "Footwear" },
+              { name: "Sneakers", image: "https://cdn.thewirecutter.com/wp-content/media/2024/05/white-sneaker-2048px-9320.jpg?auto=webp&quality=75&crop=1.91:1&width=1200", description: "Running shoes", price: "$80", type: "Footwear" }
           ];
+
+          document.getElementById("categoryFilter").addEventListener("change", updateProductDisplay);
+document.getElementById("sortFilter").addEventListener("change", updateProductDisplay);
+
+function updateProductDisplay() {
+    const category = document.getElementById("categoryFilter").value;
+    const sortType = document.getElementById("sortFilter").value;
+
+    let filteredProducts = [...products];
+
+    if (category !== "all") {
+        filteredProducts = filteredProducts.filter(product => product.type.toLowerCase() === category.toLowerCase());
+    }
+
+    
+    if (sortType === "priceLow") {
+        filteredProducts.sort((a, b) => parseFloat(a.price.replace("$", "")) - parseFloat(b.price.replace("$", "")));
+    } else if (sortType === "priceHigh") {
+        filteredProducts.sort((a, b) => parseFloat(b.price.replace("$", "")) - parseFloat(a.price.replace("$", "")));
+    } else if (sortType === "nameAZ") {
+        filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (sortType === "nameZA") {
+        filteredProducts.sort((a, b) => b.name.localeCompare(a.name));
+    }
+
+    displayProducts(filteredProducts);
+}
+
+function displayProducts(productsArray) {
+    const productGrid = document.getElementById("product-grid");
+    productGrid.innerHTML = ""; 
+
+    productsArray.forEach((product) => {
+        const productCard = document.createElement("div");
+        productCard.classList.add("product-card", "bg-white", "dark:bg-gray-800", "p-4", "rounded-lg", "shadow-md");
+
+        productCard.innerHTML = `
+            <img src="${product.image}" alt="${product.name}" class="w-full h-40 object-cover rounded-md mb-3">
+            <h3 class="product-title text-lg font-semibold text-gray-900 dark:text-white">${product.name}</h3>
+            <p class="product-description text-gray-600 dark:text-gray-300">${product.description}</p>
+            <p class="product-price text-blue-500 font-bold">${product.price}</p>
+            <button class="add-to-cart-button bg-blue-600 text-white px-4 py-2 rounded-md w-full mt-2 hover:bg-blue-700 transition">
+                Add to Cart
+            </button>
+        `;
+        
+        productGrid.appendChild(productCard);
+    });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    displayProducts(products);
+});
   
           let cart = [];
   
@@ -258,27 +303,37 @@
                   .attr("width", 400)
                   .attr("height", 400)
                   .append("g")
-                  .attr("transform", "translate(200,200)");
+                  .attr("transform", "translate($(width/2),$(height/2))");
   
-              const data = [
-                  { type: "Tops", count: 2 },
-                  { type: "Bottoms", count: 1 },
-                  { type: "Outerwear", count: 1 },
-                  { type: "Footwear", count: 1 },
-              ];
-  
-              const pie = d3.pie().value((d) => d.count);
-              const arc = d3.arc().innerRadius(100).outerRadius(150); // Create a donut chart (with inner radius 100)
-              const color = d3.scaleOrdinal(d3.schemeCategory10);
-  
-              const arcs = pieChart.selectAll("arc").data(pie(data)).enter().append("g");
-              arcs.append("path")
-                  .attr("d", arc)
-                  .attr("fill", (d) => color(d.data.type));
-              arcs.append("text")
-                  .attr("transform", (d) => "translate(" + arc.centroid(d) + ")")
-                  .attr("dy", ".35em")
-                  .text((d) => d.data.type);
+                  const data = [
+            { label: "Tops", value: 30 },
+            { label: "Bottoms", value: 20 },
+            { label: "Outerwear", value: 25 },
+            { label: "Footwear", value: 25 }
+        ];
+
+        const width = 400, height = 400, radius = Math.min(width, height) / 2;
+        const svg = d3.select("#pie-chart").append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .append("g")
+            .attr("transform", `translate(${width / 2},${height / 2})`);
+
+        const color = d3.scaleOrdinal(["#1E90FF", "#32CD32", "#FFD700", "#FF4500"]);
+        const pie = d3.pie().value(d => d.value);
+        const arc = d3.arc().innerRadius(50).outerRadius(radius);
+        const arcs = svg.selectAll("arc").data(pie(data)).enter().append("g");
+
+        arcs.append("path")
+            .attr("d", arc)
+            .attr("fill", d => color(d.data.label));
+
+        arcs.append("text")
+            .attr("transform", d => `translate(${arc.centroid(d)})`)
+            .attr("text-anchor", "middle")
+            .attr("font-size", "14px")
+            .attr("fill", "white")
+            .text(d => d.data.label);
   
               const barChart = d3.select("#bar-chart").append("svg")
                   .attr("width", 500)
@@ -325,6 +380,73 @@
   
           generateCharts();
       });
+
+      const cartButton = document.getElementById("cart-button");
+const cartBox = document.getElementById("cart-box");
+const cartCount = document.getElementById("cart-count");
+const cartItemsContainer = document.getElementById("cart-items");
+const clearCartButton = document.getElementById("clear-cart");
+
+let cart = [];
+
+cartButton.addEventListener("click", () => {
+    cartBox.classList.toggle("hidden");
+});
+
+document.querySelectorAll('.add-to-cart-button').forEach(button => {
+    button.addEventListener('click', event => {
+        const productName = event.target.closest('.product-card').querySelector(".product-title").textContent;
+        const productPrice = event.target.closest('.product-card').querySelector(".product-price").textContent;
+        const productImage = event.target.closest('.product-card').querySelector("img").src;
+
+        const existingItem = cart.find(item => item.name === productName);
+        if (existingItem) {
+            existingItem.quantity++;
+        } else {
+            cart.push({ name: productName, price: productPrice, image: productImage, quantity: 1 });
+        }
+
+        updateCartDisplay();
+    });
+});
+
+function updateCartDisplay() {
+    cartItemsContainer.innerHTML = "";
+    cartCount.classList.toggle("hidden", cart.length === 0);
+    cartCount.textContent = cart.reduce((total, item) => total + item.quantity, 0);
+
+    cart.forEach(item => {
+        const cartItem = document.createElement("div");
+        cartItem.classList.add("cart-item", "flex", "justify-between", "items-center", "mb-3", "p-3", "bg-gray-100", "dark:bg-gray-800", "rounded-lg");
+
+        cartItem.innerHTML = `
+            <img src="${item.image}" alt="${item.name}" class="w-12 h-12 object-cover rounded-md">
+            <div class="flex-1 ml-3">
+                <p class="text-sm font-semibold text-gray-900 dark:text-white">${item.name}</p>
+                <p class="text-xs text-gray-500 dark:text-gray-300">Qty: ${item.quantity}</p>
+            </div>
+            <span class="text-sm font-bold text-blue-500">${item.price}</span>
+        `;
+
+        cartItemsContainer.appendChild(cartItem);
+    });
+}
+
+clearCartButton.addEventListener("click", () => {
+    cart = [];
+    updateCartDisplay();
+});
+
+document.getElementById("checkout").addEventListener("click", () => {
+    alert("Proceeding to checkout...");
+    cart = [];
+    updateCartDisplay();
+});
+
+
+  
+
+
   </script>
   
 </body>
