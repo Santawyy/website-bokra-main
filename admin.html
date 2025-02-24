@@ -6,6 +6,25 @@
     <title>Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>tailwind.config = {darkMode: "class"};</script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#2563EB", 
+                        danger: "#DC2626",
+                        success: "#16A34A",
+                        warning: "#F59E0B",
+                        background: "#F3F4F6",
+                        darkBackground: "#1F2937"
+                    }
+                }
+            }
+        };
+    </script>
+    
 </head>
 <body class="bg-gray-100 dark:bg-black text-gray-900 dark:text-gray-200 min-h-screen p-8">
     <div class="container mx-auto">
@@ -17,6 +36,43 @@
                 <button onclick="toggleAddForm()" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Add New Product</button>
             </div>
         </div>
+        <button id="logout-button" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">
+            Logout
+        </button>
+        
+        <div id="sales-overview" class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mt-8">
+            <h2 class="text-2xl font-bold mb-4">Sales Analytics</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                <div class="p-4 bg-blue-100 dark:bg-blue-900 rounded-lg">
+                    <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-300">Total Revenue</h3>
+                    <p id="total-revenue" class="text-2xl font-bold text-blue-600 dark:text-blue-400">$0</p>
+                </div>
+        
+                <div class="p-4 bg-green-100 dark:bg-green-900 rounded-lg">
+                    <h3 class="text-lg font-semibold text-green-800 dark:text-green-300">Total Orders</h3>
+                    <p id="total-orders" class="text-2xl font-bold text-green-600 dark:text-green-400">0</p>
+                </div>
+        
+                <div class="p-4 bg-yellow-100 dark:bg-yellow-900 rounded-lg">
+                    <h3 class="text-lg font-semibold text-yellow-800 dark:text-yellow-300">Top Product</h3>
+                    <p id="top-product" class="text-2xl font-bold text-yellow-600 dark:text-yellow-400">N/A</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="flex flex-wrap justify-center gap-8 mt-8">
+            <div id="sales-bar-chart-container" class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 w-full sm:w-[500px] flex flex-col items-center">
+                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Revenue Trends</h3>
+                <div id="sales-bar-chart"></div>
+            </div>
+        
+            <div id="sales-pie-chart-container" class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 w-full sm:w-96 flex flex-col items-center">
+                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Product Sales Distribution</h3>
+                <div id="sales-pie-chart"></div>
+            </div>
+        </div>
+        
 
         <div id="productForm" class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md max-w-2xl mx-auto hidden">
             <h2 id="formTitle" class="text-2xl font-bold mb-4">Add New Product</h2>
@@ -78,6 +134,11 @@
     </div>
 
     <script>
+
+if (!localStorage.getItem("isLoggedIn") && !sessionStorage.getItem("isLoggedIn")) {
+    window.location.href = "login.html";
+}
+
         const orders = [
             { id: 'ORD001', customerName: 'John Doe', product: 'T-Shirt', quantity: 2, date: '2025-02-14', status: 'Completed' },
             { id: 'ORD002', customerName: 'Jane Smith', product: 'Jeans', quantity: 1, date: '2025-02-15', status: 'Pending' },
@@ -313,7 +374,7 @@ arcs.selectAll("path")
     { name: "Sneakers", price: "$80" }
 ];
 
-let editingIndex = null; // Track the product being edited
+let editingIndex = null;
 
 function renderAdminProducts() {
     const productTableBody = document.getElementById("productTableBody");
@@ -397,7 +458,110 @@ document.getElementById("productManageForm").addEventListener("submit", (event) 
 
 document.addEventListener("DOMContentLoaded", renderAdminProducts);
 
+let salesData = [
+    { product: "T-Shirt", quantity: 5, revenue: 100 },
+    { product: "Jeans", quantity: 3, revenue: 120 },
+    { product: "Jacket", quantity: 2, revenue: 240 },
+    { product: "Sneakers", quantity: 4, revenue: 320 }
+];
 
+function updateSalesOverview() {
+    let totalRevenue = salesData.reduce((sum, sale) => sum + sale.revenue, 0);
+    let totalOrders = salesData.reduce((sum, sale) => sum + sale.quantity, 0);
+    let topProduct = salesData.reduce((prev, current) => (prev.quantity > current.quantity ? prev : current), salesData[0]);
+
+    document.getElementById("total-revenue").textContent = `$${totalRevenue}`;
+    document.getElementById("total-orders").textContent = totalOrders;
+    document.getElementById("top-product").textContent = topProduct.product;
+}
+
+updateSalesOverview();
+
+
+function drawSalesBarChart() {
+    const barWidth = 400;
+    const barHeight = 300;
+
+    const svg = d3.select("#sales-bar-chart").append("svg")
+        .attr("width", barWidth)
+        .attr("height", barHeight)
+        .append("g")
+        .attr("transform", "translate(40,20)");
+
+    const x = d3.scaleBand()
+        .domain(salesData.map(d => d.product))
+        .range([0, barWidth - 80])
+        .padding(0.1);
+
+    const y = d3.scaleLinear()
+        .domain([0, d3.max(salesData, d => d.revenue)])
+        .nice()
+        .range([250, 0]);
+
+    svg.selectAll(".bar")
+        .data(salesData)
+        .enter().append("rect")
+        .attr("x", d => x(d.product))
+        .attr("y", d => y(d.revenue))
+        .attr("width", x.bandwidth())
+        .attr("height", d => 250 - y(d.revenue))
+        .attr("fill", "#4C9CFF")
+        .on("mouseover", function () { d3.select(this).attr("fill", "#2563EB"); })
+        .on("mouseout", function () { d3.select(this).attr("fill", "#4C9CFF"); });
+
+    svg.append("g")
+        .attr("transform", "translate(0,250)")
+        .call(d3.axisBottom(x));
+
+    svg.append("g").call(d3.axisLeft(y));
+}
+
+function drawSalesPieChart() {
+    const chartContainer = d3.select("#sales-pie-chart");
+    chartContainer.selectAll("svg").remove(); 
+
+    const width = 300;
+    const height = 300;
+    const radius = Math.min(width, height) / 2;
+
+    const svg = d3.select("#sales-pie-chart").append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .append("g")
+        .attr("transform", `translate(${width / 2},${height / 2})`);
+
+    const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+    const pie = d3.pie().value(d => d.quantity);
+    const arc = d3.arc().innerRadius(50).outerRadius(radius);
+
+    const arcs = svg.selectAll("arc")
+        .data(pie(salesData))
+        .enter().append("g");
+
+    arcs.append("path")
+        .attr("d", arc)
+        .attr("fill", d => color(d.data.product))
+        .on("mouseover", function () { d3.select(this).attr("opacity", 0.7); })
+        .on("mouseout", function () { d3.select(this).attr("opacity", 1); });
+
+    arcs.append("text")
+        .attr("transform", d => `translate(${arc.centroid(d)})`)
+        .attr("text-anchor", "middle")
+        .attr("font-size", "14px")
+        .attr("fill", "white")
+        .text(d => d.data.product);
+}
+document.addEventListener("DOMContentLoaded", drawSalesPieChart);
+
+drawSalesBarChart();
+document.addEventListener("DOMContentLoaded", drawSalesPieChart);
+
+
+document.getElementById("logout-button").addEventListener("click", function () {
+    localStorage.removeItem("isLoggedIn");
+    window.location.href = "login.html";
+});
 
 
     </script>
