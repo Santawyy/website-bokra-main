@@ -1,471 +1,421 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Product Layout</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <style type="text/tailwindcss">
-        body { @apply bg-gradient-to-br from-gray-900 to-gray-800 text-white min-h-screen; }
-        header { @apply bg-gray-900 shadow-lg sticky top-0 z-50 p-4 flex justify-between items-center border-b border-gray-700; }
-        .header-links { @apply flex space-x-6; }
-        .header-link { @apply text-lg font-medium text-gray-300 hover:text-blue-400 transition-colors duration-300; }
-        .search-bar { @apply px-4 py-2 bg-gray-800 text-white border border-gray-700 rounded-md focus:ring-2 focus:ring-blue-500; }
-        .product-grid { @apply grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mt-6; }
-        .product-card { @apply bg-white bg-opacity-10 rounded-lg shadow-xl p-4 transform transition duration-300 hover:scale-105 hover:shadow-2xl; }
-        .product-card img { @apply w-full h-60 object-cover rounded-md mb-4; }
-        .product-title { @apply text-xl font-semibold text-white mb-2; }
-        .product-description { @apply text-gray-300 text-sm mb-3; }
-        .product-price { @apply text-lg font-bold text-blue-400 mb-3; }
-        .add-to-cart-button { @apply w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-all; }
-        .cart-box { @apply fixed top-5 right-5 bg-gray-900 shadow-xl p-6 rounded-lg w-80 border border-gray-700; }
-        .cart-item { @apply flex justify-between items-center mb-4 p-3 bg-gray-800 border border-gray-700 rounded-lg hover:bg-gray-700 transition-all; }
-        .cart-button { @apply bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 transition-all; }
-        .cart-remove-button { @apply mt-5 bg-red-600 text-white px-5 py-2 rounded-lg w-full text-lg font-semibold hover:bg-red-700 transition-all; }
+      body {
+        @apply bg-gradient-to-br from-gray-900 to-gray-800 text-white min-h-screen;
+      }
+      header {
+        @apply bg-gray-900 shadow-lg sticky top-0 z-50 p-4 flex justify-between items-center border-b border-gray-700;
+      }
+      .header-links {
+        @apply flex space-x-6;
+      }
+      .header-link {
+        @apply text-lg font-medium text-gray-300 hover:text-blue-400 transition-colors duration-300;
+      }
+      .search-bar {
+        @apply px-4 py-2 bg-gray-800 text-white border border-gray-700 rounded-md focus:ring-2 focus:ring-blue-500;
+      }
+      .product-grid {
+        @apply grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mt-6;
+      }
+      .product-card {
+        @apply bg-white bg-opacity-10 rounded-lg shadow-xl p-4 transform transition duration-300 hover:scale-105 hover:shadow-2xl;
+      }
+      .product-card img {
+        @apply w-full h-60 object-cover rounded-md mb-4;
+      }
+      .product-title {
+        @apply text-xl font-semibold text-white mb-2;
+      }
+      .product-description {
+        @apply text-gray-300 text-sm mb-3;
+      }
+      .product-price {
+        @apply text-lg font-bold text-blue-400 mb-3;
+      }
+      .add-to-cart-button {
+        @apply w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-all;
+      }
+      .cart-box {
+        @apply fixed top-5 right-5 bg-gray-900 shadow-xl p-6 rounded-lg w-80 border border-gray-700;
+      }
+      .cart-item {
+        @apply flex justify-between items-center mb-4 p-3 bg-gray-800 border border-gray-700 rounded-lg hover:bg-gray-700 transition-all;
+      }
+      .cart-button {
+        @apply bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 transition-all;
+      }
+      .cart-remove-button {
+        @apply mt-5 bg-red-600 text-white px-5 py-2 rounded-lg w-full text-lg font-semibold hover:bg-red-700 transition-all;
+      }
     </style>
     <script>
-    tailwind.config = {
-        darkMode: 'class',
+      tailwind.config = {
+        darkMode: "class",
         theme: {
-            extend: {
-                colors: {
-                    primary: "#2563EB", 
-                    danger: "#DC2626",
-                    success: "#16A34A",
-                    warning: "#F59E0B",
-                    background: "#F3F4F6",
-                    darkBackground: "#1F2937"
-                }
-            }
-        }
-    };
-</script>
-
-</head>
-<body class="bg-gray-50 p-5 font-sans leading-6">
+          extend: {
+            colors: {
+              primary: "#2563EB",
+              danger: "#DC2626",
+              success: "#16A34A",
+              warning: "#F59E0B",
+              background: "#F3F4F6",
+              darkBackground: "#1F2937",
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body class="bg-gray-50 p-5 font-sans leading-6">
     <header class="bg-white shadow-md py-4">
-        <div class="container mx-auto flex justify-between items-center">
-            <div class="flex space-x-6">
-                <a class="header-link" href="#home">Home</a>
-                <a class="header-link" href="about">About</a>
-                <a class="header-link" href="contact">Contact Us</a>
-                <a class="header-link" href="admin.html" id="admin-link">Admin Dashboard</a>
-            </div>
-            <input
-                id="searchBar"
-                type="text"
-                placeholder="Search.."
-                class="search-bar"
-            />
-            <button id="cart-button" class="relative bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
-                🛒 Cart <span id="cart-count" class="absolute top-0 right-0 bg-red-500 text-white text-xs px-2 py-1 rounded-full hidden">0</span>
-            </button>
-            <button id="toggle-theme" class="toggle-theme">Dark Mode</button>
+      <div class="container mx-auto flex justify-between items-center">
+        <div class="flex space-x-6">
+          <a class="header-link" href="#home">Home</a>
+          <a class="header-link" href="about">About</a>
+          <a class="header-link" href="contact">Contact Us</a>
+          <a class="header-link" href="admin.html" id="admin-link"
+            >Admin Dashboard</a
+          >
         </div>
+        <input
+          id="searchBar"
+          type="text"
+          placeholder="Search.."
+          class="search-bar"
+        />
+        <button
+          id="cart-button"
+          class="relative bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+        >
+          🛒 Cart
+          <span
+            id="cart-count"
+            class="absolute top-0 right-0 bg-red-500 text-white text-xs px-2 py-1 rounded-full hidden"
+            >0</span
+          >
+        </button>
+        <button id="toggle-theme" class="toggle-theme">Dark Mode</button>
+      </div>
     </header>
     <main class="container mx-auto mt-8">
-        <div class="flex flex-wrap justify-between items-center mb-6">
-            <select id="categoryFilter" class="p-2 border border-gray-600 bg-white dark:bg-gray-800 dark:text-white text-gray-900 rounded-md focus:ring-2 focus:ring-blue-500">
-                <option value="all">All Categories</option>
-                <option value="Tops">Tops</option>
-                <option value="Bottoms">Bottoms</option>
-                <option value="Outerwear">Outerwear</option>
-                <option value="Footwear">Footwear</option>
-            </select>
-        
-            <select id="sortFilter" class="p-2 border border-gray-600 bg-white dark:bg-gray-800 dark:text-white text-gray-900 rounded-md focus:ring-2 focus:ring-blue-500">
-                <option value="default">Sort By</option>
-                <option value="priceLow">Price: Low to High</option>
-                <option value="priceHigh">Price: High to Low</option>
-                <option value="nameAZ">Name: A to Z</option>
-                <option value="nameZA">Name: Z to A</option>
-            </select>
+      <div class="flex flex-wrap justify-between items-center mb-6">
+        <select
+          id="categoryFilter"
+          class="p-2 border border-gray-600 bg-white dark:bg-gray-800 dark:text-white text-gray-900 rounded-md focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="all">All Categories</option>
+          <option value="Tops">Tops</option>
+          <option value="Bottoms">Bottoms</option>
+          <option value="Outerwear">Outerwear</option>
+          <option value="Footwear">Footwear</option>
+        </select>
+
+        <select
+          id="sortFilter"
+          class="p-2 border border-gray-600 bg-white dark:bg-gray-800 dark:text-white text-gray-900 rounded-md focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="default">Sort By</option>
+          <option value="priceLow">Price: Low to High</option>
+          <option value="priceHigh">Price: High to Low</option>
+          <option value="nameAZ">Name: A to Z</option>
+          <option value="nameZA">Name: Z to A</option>
+        </select>
+      </div>
+
+      <section class="product-grid" id="product-grid"></section>
+      <div class="charts-container">
+        <div class="pie-chart-container">
+          <!-- <h2 class="text-2xl font-bold mb-4">Product Types Distribution</h2> -->
+          <!-- <div id="pie-chart"></div> -->
         </div>
-        
-        
-        <section class="product-grid" id="product-grid"></section>
-        <div class="charts-container">
-            <div class="pie-chart-container">
-                <!-- <h2 class="text-2xl font-bold mb-4">Product Types Distribution</h2> -->
-                <!-- <div id="pie-chart"></div> -->
-            </div>
-            <div class="bar-chart-container">
-                <!-- <h2 class="text-2xl font-bold mb-4">Purchases per Hour</h2> -->
-                <!-- <div id="bar-chart"></div> -->
-            </div>
+        <div class="bar-chart-container">
+          <!-- <h2 class="text-2xl font-bold mb-4">Purchases per Hour</h2> -->
+          <!-- <div id="bar-chart"></div> -->
         </div>
+      </div>
     </main>
-    <div id="cart-box" class="fixed top-5 right-5 bg-white dark:bg-gray-900 shadow-lg p-6 rounded-lg w-80 border border-gray-300 dark:border-gray-700 hidden">
-        <h3 class="text-lg font-bold mb-4">Shopping Cart</h3>
-        <div id="cart-items"></div>
-        
-        <button id="clear-cart" class="w-full bg-red-600 text-white px-4 py-2 rounded-md mt-4 hover:bg-red-700">
-            Clear Cart
-        </button>
-        <button id="checkout" class="w-full bg-green-600 text-white px-4 py-2 rounded-md mt-2 hover:bg-green-700">
-            Checkout
-        </button>
+    <div
+      id="cart-box"
+      class="fixed top-5 right-5 bg-white dark:bg-gray-900 shadow-lg p-6 rounded-lg w-80 border border-gray-300 dark:border-gray-700 hidden"
+    >
+      <h3 class="text-lg font-bold mb-4">Shopping Cart</h3>
+      <div id="cart-items"></div>
+
+      <button
+        id="clear-cart"
+        class="w-full bg-red-600 text-white px-4 py-2 rounded-md mt-4 hover:bg-red-700"
+      >
+        Clear Cart
+      </button>
+      <button
+        id="checkout"
+        class="w-full bg-green-600 text-white px-4 py-2 rounded-md mt-2 hover:bg-green-700"
+      >
+        Checkout
+      </button>
     </div>
 
     <section id="admin-dashboard" class="hidden">
-        <div class="admin-form">
-            <h2 class="text-2xl font-bold mb-4">Add New Product</h2>
-            <form id="add-product-form">
-                <input
-                    type="text"
-                    id="product-name"
-                    placeholder="Product Name"
-                    required
-                />
-                <input
-                    type="text"
-                    id="product-image"
-                    placeholder="Image URL"
-                    required
-                />
-                <textarea
-                    id="product-description"
-                    placeholder="Product Description"
-                    required
-                ></textarea>
-                <input
-                    type="number"
-                    id="product-price"
-                    placeholder="Price"
-                    required
-                />
-                <button type="submit">Add Product</button>
-            </form>
-        </div>
-        <div class="admin-form">
-            <h2 class="text-2xl font-bold mb-4">Manage Products</h2>
-            <div id="product-list"></div>
-        </div>
+      <div class="admin-form">
+        <h2 class="text-2xl font-bold mb-4">Add New Product</h2>
+        <form id="add-product-form">
+          <input
+            type="text"
+            id="product-name"
+            placeholder="Product Name"
+            required
+          />
+          <input
+            type="text"
+            id="product-image"
+            placeholder="Image URL"
+            required
+          />
+          <textarea
+            id="product-description"
+            placeholder="Product Description"
+            required
+          ></textarea>
+          <input
+            type="number"
+            id="product-price"
+            placeholder="Price"
+            required
+          />
+          <button type="submit">Add Product</button>
+        </form>
+      </div>
+      <div class="admin-form">
+        <h2 class="text-2xl font-bold mb-4">Manage Products</h2>
+        <div id="product-list"></div>
+      </div>
     </section>
 
     <script>
-document.getElementById("toggle-theme").addEventListener("click", function () {
-    document.body.classList.toggle("bg-gray-100");
-    document.body.classList.toggle("text-black");
-});
-document.getElementById("searchBar").addEventListener("input", function () {
-    const value = this.value.toLowerCase();
-    document.querySelectorAll(".product-card").forEach(card => {
-        const title = card.querySelector(".product-title");
-        if (title) {
-            const title = title.textContent.toLowerCase();
-            card.style.display = titleTex.includes(term) ? "block" : "none";
-        }
-    });
-    
-});
-
-
- 
-
+      document
+        .getElementById("toggle-theme")
+        .addEventListener("click", function () {
+          document.body.classList.toggle("bg-gray-100");
+          document.body.classList.toggle("text-black");
+        });
+      document
+        .getElementById("searchBar")
+        .addEventListener("input", function () {
+          const value = this.value.toLowerCase();
+          document.querySelectorAll(".product-card").forEach((card) => {
+            const title = card.querySelector(".product-title");
+            if (title) {
+              const title = title.textContent.toLowerCase();
+              card.style.display = titleTex.includes(term) ? "block" : "none";
+            }
+          });
+        });
 
       document.addEventListener("DOMContentLoaded", function () {
-          const searchBar = document.getElementById("searchBar");
-          const productGrid = document.getElementById("product-grid");
-          const cartBox = document.getElementById("cart-box");
-          const cartItems = document.getElementById("cart-items");
-          const checkoutButton = document.getElementById("checkout");
-          const adminLink = document.getElementById("admin-link");
-          const adminDashboard = document.getElementById("admin-dashboard");
-          const addProductForm = document.getElementById("add-product-form");
-          const productList = document.getElementById("product-list");
-  
-          let products = [
-              { name: "T-Shirt", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSceTnrMg20WHpG8ASvrafLLMuDYUw28Tsegg&s   ", description: "Cotton T-shirt", price: "$20", type: "Tops" },
-              { name: "Jeans", image: "https://images.napali.app/global/element-products/all/default/xlarge/eljdp00106_element,f_bnt0_frt1.jpg", description: "Slim fit jeans", price: "$40", type: "Bottoms" },
-              { name: "Jacket", image: "https://m.media-amazon.com/images/I/61FRgVZBhzL._AC_UY1000_.jpg", description: "Leather jacket", price: "$120", type: "Outerwear" },
-              { name: "Sweater", image: "https://images-cdn.ubuy.co.in/654ec7dd9fb75b0f9d500283-aelfric-eden-cable-knit-sweater-women.jpg", description: "Wool sweater", price: "$50", type: "Tops" },
-              { name: "Sneakers", image: "https://cdn.thewirecutter.com/wp-content/media/2024/05/white-sneaker-2048px-9320.jpg?auto=webp&quality=75&crop=1.91:1&width=1200", description: "Running shoes", price: "$80", type: "Footwear" }
-          ];
+        const productGrid = document.getElementById("product-grid");
+        const searchBar = document.getElementById("searchBar");
+        const cartBox = document.getElementById("cart-box");
+        const cartItemsContainer = document.getElementById("cart-items");
+        const cartCount = document.getElementById("cart-count");
+        const checkoutButton = document.getElementById("checkout");
+        const categoryFilter = document.getElementById("categoryFilter");
+        const sortFilter = document.getElementById("sortFilter");
 
-          document.getElementById("categoryFilter").addEventListener("change", updateProductDisplay);
-document.getElementById("sortFilter").addEventListener("change", updateProductDisplay);
+        s;
+        let products = [];
+        let cart = [];
 
-function updateProductDisplay() {
-    const category = document.getElementById("categoryFilter").value;
-    const sortType = document.getElementById("sortFilter").value;
+        function displayProducts(productsArray) {
+          console.log("🔵 Running displayProducts...", productsArray);
 
-    let filteredProducts = [...products];
+          if (!Array.isArray(productsArray) || productsArray.length === 0) {
+            console.error(
+              "🔴 displayProducts received an invalid or empty array."
+            );
+            productGrid.innerHTML = "<p>No products available.</p>";
+            return;
+          }
 
-    if (category !== "all") {
-        filteredProducts = filteredProducts.filter(product => product.type.toLowerCase() === category.toLowerCase());
-    }
+          productGrid.innerHTML = "";
 
-    
-    if (sortType === "priceLow") {
-        filteredProducts.sort((a, b) => parseFloat(a.price.replace("$", "")) - parseFloat(b.price.replace("$", "")));
-    } else if (sortType === "priceHigh") {
-        filteredProducts.sort((a, b) => parseFloat(b.price.replace("$", "")) - parseFloat(a.price.replace("$", "")));
-    } else if (sortType === "nameAZ") {
-        filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
-    } else if (sortType === "nameZA") {
-        filteredProducts.sort((a, b) => b.name.localeCompare(a.name));
-    }
-
-    displayProducts(filteredProducts);
-}
-
-function displayProducts(productsArray) {
-    const productGrid = document.getElementById("product-grid");
-    productGrid.innerHTML = ""; 
-
-    productsArray.forEach((product) => {
-        const productCard = document.createElement("div");
-        productCard.classList.add("product-card", "bg-white", "dark:bg-gray-800", "p-4", "rounded-lg", "shadow-md");
-
-        productCard.innerHTML = `
-            <img src="${product.image}" alt="${product.name}" class="w-full h-40 object-cover rounded-md mb-3">
-            <h3 class="product-title text-lg font-semibold text-gray-900 dark:text-white">${product.name}</h3>
-            <p class="product-description text-gray-600 dark:text-gray-300">${product.description}</p>
-            <p class="product-price text-blue-500 font-bold">${product.price}</p>
-            <button class="add-to-cart-button bg-blue-600 text-white px-4 py-2 rounded-md w-full mt-2 hover:bg-blue-700 transition">
-                Add to Cart
-            </button>
+          productsArray.forEach((product, index) => {
+            console.log(`🟢 Adding product ${index + 1}:`, product);
+            const productCard = document.createElement("div");
+            productCard.classList.add("product-card");
+            productCard.innerHTML = `
+          <img src="${product.image}" alt="${
+              product.title
+            }" class="w-full h-40 object-cover rounded-md mb-3">
+          <h3 class="product-title">${product.title}</h3>
+          <p class="product-description">${product.description.substring(
+            0,
+            50
+          )}...</p>
+          <p class="product-price">$${product.price}</p>
+          <button class="add-to-cart-button bg-blue-600 text-white px-4 py-2 rounded-md w-full mt-2 hover:bg-blue-700 transition" 
+                  data-name="${product.title}" 
+                  data-image="${product.image}" 
+                  data-price="${product.price}">
+            Add to Cart
+          </button>
         `;
-        
-        productGrid.appendChild(productCard);
-    });
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-    displayProducts(products);
-});
-  
-          let cart = [];
-  
-          function displayProducts(products) {
-              productGrid.innerHTML = "";
-              products.forEach((product) => {
-                  const productCard = document.createElement("div");
-                  productCard.classList.add("product-card");
-                  productCard.innerHTML = `
-                      <img src="${product.image}" alt="${product.name}" />
-                      <div class="px-4 py-3">
-                          <h3 class="product-title">${product.name}</h3>
-                          <p class="product-description">${product.description}</p>
-                          <p class="product-price">${product.price}</p>
-                          <button class="add-to-cart-button" data-name="${product.name}" data-image="${product.image}" data-price="${product.price}">Add to Cart</button>
-                      </div>
-                  `;
-                  productGrid.appendChild(productCard);
-              });
-              
-              document.querySelectorAll('.add-to-cart-button').forEach(button => {
-                  button.addEventListener('click', addToCart);
-              });
-          }
-  
-          function addToCart(event) {
-              const productName = event.target.getAttribute('data-name');
-              const productImage = event.target.getAttribute('data-image');
-              const productPrice = event.target.getAttribute('data-price');
-  
-              const productInCart = cart.find(item => item.name === productName);
-              if (productInCart) {
-                  productInCart.quantity++;
-              } else {
-                  cart.push({ name: productName, image: productImage, price: productPrice, quantity: 1 });
-              }
-  
-              updateCartDisplay();
-          }
-  
-          function updateCartDisplay() {
-              cartItems.innerHTML = ""; 
-              cart.forEach(item => {
-                  const cartItem = document.createElement("div");
-                  cartItem.classList.add("cart-item");
-                  cartItem.innerHTML = `
-                      <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover mr-4" />
-                      <div class="flex flex-col">
-                          <span class="text-sm">${item.name}</span>
-                          <span class="text-sm text-gray-600">Quantity: ${item.quantity}</span>
-                      </div>
-                      <span class="text-sm text-gray-900">${item.price}</span>
-                  `;
-                  cartItems.appendChild(cartItem);
-              });
-  
-              if (cart.length > 0) {
-                  cartBox.classList.remove("hidden");
-              } else {
-                  cartBox.classList.add("hidden");
-              }
-          }
-  
-          checkoutButton.addEventListener("click", function () {
-              alert("Proceeding to checkout...");
-              cart = [];
-              updateCartDisplay();
+            productGrid.appendChild(productCard);
           });
-  
-          searchBar.addEventListener("input", function () {
-              const searchTerm = searchBar.value.toLowerCase();
-              const filteredProducts = products.filter(product => 
-                  product.name.toLowerCase().includes(searchTerm) || 
-                  product.description.toLowerCase().includes(searchTerm)
-              );
-              displayProducts(filteredProducts);
+
+          document.querySelectorAll(".add-to-cart-button").forEach((button) => {
+            button.addEventListener("click", addToCart);
           });
-  
-          displayProducts(products);
-  
-          function generateCharts() {
-              const pieChart = d3.select("#pie-chart").append("svg")
-                  .attr("width", 400)
-                  .attr("height", 400)
-                  .append("g")
-                  .attr("transform", "translate($(width/2),$(height/2))");
-  
-                  const data = [
-            { label: "Tops", value: 30 },
-            { label: "Bottoms", value: 20 },
-            { label: "Outerwear", value: 25 },
-            { label: "Footwear", value: 25 }
-        ];
-
-        const width = 400, height = 400, radius = Math.min(width, height) / 2;
-        const svg = d3.select("#pie-chart").append("svg")
-            .attr("width", width)
-            .attr("height", height)
-            .append("g")
-            .attr("transform", `translate(${width / 2},${height / 2})`);
-
-        const color = d3.scaleOrdinal(["#1E90FF", "#32CD32", "#FFD700", "#FF4500"]);
-        const pie = d3.pie().value(d => d.value);
-        const arc = d3.arc().innerRadius(50).outerRadius(radius);
-        const arcs = svg.selectAll("arc").data(pie(data)).enter().append("g");
-
-        arcs.append("path")
-            .attr("d", arc)
-            .attr("fill", d => color(d.data.label));
-
-        arcs.append("text")
-            .attr("transform", d => `translate(${arc.centroid(d)})`)
-            .attr("text-anchor", "middle")
-            .attr("font-size", "14px")
-            .attr("fill", "white")
-            .text(d => d.data.label);
-  
-              const barChart = d3.select("#bar-chart").append("svg")
-                  .attr("width", 500)
-                  .attr("height", 350)
-                  .append("g")
-                  .attr("transform", "translate(40,20)");
-  
-              const barData = [
-                  { hour: "12 AM", count: 5 },
-                  { hour: "1 AM", count: 3 },
-                  { hour: "2 AM", count: 6 },
-                  { hour: "3 AM", count: 2 },
-                  { hour: "4 AM", count: 4 },
-              ];
-  
-              const x = d3.scaleBand().domain(barData.map((d) => d.hour)).range([0, 400]).padding(0.1);
-              const y = d3.scaleLinear().domain([0, d3.max(barData, (d) => d.count)]).nice().range([280, 0]);
-  
-              barChart.selectAll(".bar")
-                  .data(barData)
-                  .enter().append("rect")
-                  .attr("class", "bar")
-                  .attr("x", (d) => x(d.hour))
-                  .attr("y", (d) => y(d.count))
-                  .attr("width", x.bandwidth())
-                  .attr("height", (d) => 280 - y(d.count))
-                  .attr("fill", "#4C9CFF");
-  
-              barChart.append("g")
-                  .attr("transform", "translate(0,280)")
-                  .call(d3.axisBottom(x));
-  
-              barChart.append("g").call(d3.axisLeft(y));
-  
-              barChart.selectAll(".text")
-                  .data(barData)
-                  .enter().append("text")
-                  .attr("x", (d) => x(d.hour) + x.bandwidth() / 2)
-                  .attr("y", (d) => y(d.count) - 10)
-                  .attr("text-anchor", "middle")
-                  .attr("fill", "black")
-                  .text((d) => d.count);
-          }
-  
-          generateCharts();
-      });
-
-      const cartButton = document.getElementById("cart-button");
-const cartBox = document.getElementById("cart-box");
-const cartCount = document.getElementById("cart-count");
-const cartItemsContainer = document.getElementById("cart-items");
-const clearCartButton = document.getElementById("clear-cart");
-
-let cart = [];
-
-cartButton.addEventListener("click", () => {
-    cartBox.classList.toggle("hidden");
-});
-
-document.querySelectorAll('.add-to-cart-button').forEach(button => {
-    button.addEventListener('click', event => {
-        const productName = event.target.closest('.product-card').querySelector(".product-title").textContent;
-        const productPrice = event.target.closest('.product-card').querySelector(".product-price").textContent;
-        const productImage = event.target.closest('.product-card').querySelector("img").src;
-
-        const existingItem = cart.find(item => item.name === productName);
-        if (existingItem) {
-            existingItem.quantity++;
-        } else {
-            cart.push({ name: productName, price: productPrice, image: productImage, quantity: 1 });
         }
 
-        updateCartDisplay();
-    });
-});
+        function addToCart(event) {
+          const productName = event.target.getAttribute("data-name");
+          const productImage = event.target.getAttribute("data-image");
+          const productPrice = event.target.getAttribute("data-price");
 
-function updateCartDisplay() {
-    cartItemsContainer.innerHTML = "";
-    cartCount.classList.toggle("hidden", cart.length === 0);
-    cartCount.textContent = cart.reduce((total, item) => total + item.quantity, 0);
+          const productInCart = cart.find((item) => item.name === productName);
+          if (productInCart) {
+            productInCart.quantity++;
+          } else {
+            cart.push({
+              name: productName,
+              image: productImage,
+              price: productPrice,
+              quantity: 1,
+            });
+          }
+          updateCartDisplay();
+        }
 
-    cart.forEach(item => {
-        const cartItem = document.createElement("div");
-        cartItem.classList.add("cart-item", "flex", "justify-between", "items-center", "mb-3", "p-3", "bg-gray-100", "dark:bg-gray-800", "rounded-lg");
-
-        cartItem.innerHTML = `
-            <img src="${item.image}" alt="${item.name}" class="w-12 h-12 object-cover rounded-md">
-            <div class="flex-1 ml-3">
-                <p class="text-sm font-semibold text-gray-900 dark:text-white">${item.name}</p>
-                <p class="text-xs text-gray-500 dark:text-gray-300">Qty: ${item.quantity}</p>
-            </div>
-            <span class="text-sm font-bold text-blue-500">${item.price}</span>
+        function updateCartDisplay() {
+          cartItemsContainer.innerHTML = "";
+          cart.forEach((item) => {
+            const cartItem = document.createElement("div");
+            cartItem.classList.add(
+              "cart-item",
+              "flex",
+              "justify-between",
+              "items-center",
+              "mb-3",
+              "p-3",
+              "bg-gray-100",
+              "dark:bg-gray-800",
+              "rounded-lg"
+            );
+            cartItem.innerHTML = `
+          <img src="${item.image}" alt="${item.name}" class="w-12 h-12 object-cover rounded-md">
+          <div class="flex-1 ml-3">
+              <p class="text-sm font-semibold">${item.name}</p>
+              <p class="text-xs">Qty: ${item.quantity}</p>
+          </div>
+          <span class="text-sm font-bold">$${item.price}</span>
         `;
+            cartItemsContainer.appendChild(cartItem);
+          });
 
-        cartItemsContainer.appendChild(cartItem);
-    });
-}
+          const totalItems = cart.reduce(
+            (total, item) => total + item.quantity,
+            0
+          );
+          cartCount.textContent = totalItems;
+          cartCount.classList.toggle("hidden", totalItems === 0);
 
-clearCartButton.addEventListener("click", () => {
-    cart = [];
-    updateCartDisplay();
-});
+          cartBox.classList.toggle("hidden", cart.length === 0);
+        }
 
-document.getElementById("checkout").addEventListener("click", () => {
-    alert("Proceeding to checkout...");
-    cart = [];
-    updateCartDisplay();
-});
+        async function fetchProducts() {
+          try {
+            console.log("🟡 fetchProducts() is running...");
+            const response = await fetch("https://fakestoreapi.com/products");
+            console.log("🟡 API response received:", response);
 
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
 
-  
+            products = await response.json();
+            console.log("🟢 Products fetched successfully:", products);
 
+            if (!Array.isArray(products) || products.length === 0) {
+              throw new Error("❌ API returned an empty or invalid response.");
+            }
 
-  </script>
-  
-</body>
+            displayProducts(products);
+          } catch (error) {
+            console.error("🔴 Error fetching products:", error);
+            productGrid.innerHTML = "<p>Error loading products.</p>";
+          }
+        }
+
+        searchBar.addEventListener("input", function () {
+          const searchTerm = searchBar.value.toLowerCase();
+          const filteredProducts = products.filter(
+            (product) =>
+              product.title.toLowerCase().includes(searchTerm) ||
+              product.description.toLowerCase().includes(searchTerm)
+          );
+          displayProducts(filteredProducts);
+        });
+
+        function updateProductDisplay() {
+          let filteredProducts = [...products];
+          const category = categoryFilter.value;
+          const sortType = sortFilter.value;
+
+          if (category !== "all") {
+            filteredProducts = filteredProducts.filter(
+              (product) =>
+                product.type &&
+                product.type.toLowerCase() === category.toLowerCase()
+            );
+          }
+
+          if (sortType === "priceLow") {
+            filteredProducts.sort(
+              (a, b) => parseFloat(a.price) - parseFloat(b.price)
+            );
+          } else if (sortType === "priceHigh") {
+            filteredProducts.sort(
+              (a, b) => parseFloat(b.price) - parseFloat(a.price)
+            );
+          } else if (sortType === "nameAZ") {
+            filteredProducts.sort((a, b) => a.title.localeCompare(b.title));
+          } else if (sortType === "nameZA") {
+            filteredProducts.sort((a, b) => b.title.localeCompare(a.title));
+          }
+
+          displayProducts(filteredProducts);
+        }
+
+        categoryFilter.addEventListener("change", updateProductDisplay);
+        sortFilter.addEventListener("change", updateProductDisplay);
+
+        const cartButton = document.getElementById("cart-button");
+        cartButton.addEventListener("click", () => {
+          cartBox.classList.toggle("hidden");
+        });
+
+        const clearCartButton = document.getElementById("clear-cart");
+        clearCartButton.addEventListener("click", () => {
+          cart = [];
+          updateCartDisplay();
+        });
+
+        checkoutButton.addEventListener("click", () => {
+          alert("Proceeding to checkout...");
+          cart = [];
+          updateCartDisplay();
+        });
+
+        fetchProducts();
+      });
+    </script>
+  </body>
 </html>
