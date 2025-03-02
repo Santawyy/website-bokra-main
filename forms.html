@@ -6,56 +6,8 @@
     <title>Product Layout</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
-    <style type="text/tailwindcss">
-      body {
-        @apply bg-gradient-to-br from-gray-900 to-gray-800 text-white min-h-screen;
-      }
-      header {
-        @apply bg-gray-900 shadow-lg sticky top-0 z-50 p-4 flex justify-between items-center border-b border-gray-700;
-      }
-      .header-links {
-        @apply flex space-x-6;
-      }
-      .header-link {
-        @apply text-lg font-medium text-gray-300 hover:text-blue-400 transition-colors duration-300;
-      }
-      .search-bar {
-        @apply px-4 py-2 bg-gray-800 text-white border border-gray-700 rounded-md focus:ring-2 focus:ring-blue-500;
-      }
-      .product-grid {
-        @apply grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mt-6;
-      }
-      .product-card {
-        @apply bg-white bg-opacity-10 rounded-lg shadow-xl p-4 transform transition duration-300 hover:scale-105 hover:shadow-2xl;
-      }
-      .product-card img {
-        @apply w-full h-60 object-cover rounded-md mb-4;
-      }
-      .product-title {
-        @apply text-xl font-semibold text-white mb-2;
-      }
-      .product-description {
-        @apply text-gray-300 text-sm mb-3;
-      }
-      .product-price {
-        @apply text-lg font-bold text-blue-400 mb-3;
-      }
-      .add-to-cart-button {
-        @apply w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-all;
-      }
-      .cart-box {
-        @apply fixed top-5 right-5 bg-gray-900 shadow-xl p-6 rounded-lg w-80 border border-gray-700;
-      }
-      .cart-item {
-        @apply flex justify-between items-center mb-4 p-3 bg-gray-800 border border-gray-700 rounded-lg hover:bg-gray-700 transition-all;
-      }
-      .cart-button {
-        @apply bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 transition-all;
-      }
-      .cart-remove-button {
-        @apply mt-5 bg-red-600 text-white px-5 py-2 rounded-lg w-full text-lg font-semibold hover:bg-red-700 transition-all;
-      }
-    </style>
+    <style type="text/tailwindcss"></style>
+    <link rel="stylesheet" href="styles.css" />
     <script>
       tailwind.config = {
         darkMode: "class",
@@ -75,36 +27,65 @@
     </script>
   </head>
   <body class="bg-gray-50 p-5 font-sans leading-6">
-    <header class="bg-white shadow-md py-4">
+    <header
+      class="bg-gray-900 shadow-lg sticky top-0 z-50 p-4 border-b border-gray-700"
+    >
       <div class="container mx-auto flex justify-between items-center">
-        <div class="flex space-x-6">
-          <a class="header-link" href="#home">Home</a>
-          <a class="header-link" href="about">About</a>
-          <a class="header-link" href="contact">Contact Us</a>
-          <a class="header-link" href="admin.html" id="admin-link"
-            >Admin Dashboard</a
-          >
-        </div>
-        <input
-          id="searchBar"
-          type="text"
-          placeholder="Search.."
-          class="search-bar"
-        />
-        <button
-          id="cart-button"
-          class="relative bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+        <a href="#" class="text-2xl font-bold text-white tracking-wide"
+          >BokraShop</a
         >
-          🛒 Cart
-          <span
-            id="cart-count"
-            class="absolute top-0 right-0 bg-red-500 text-white text-xs px-2 py-1 rounded-full hidden"
-            >0</span
+
+        <nav class="hidden md:flex space-x-6">
+          <a href="#home" class="header-link">Home</a>
+          <a href="about.html" class="header-link">About</a>
+          <a href="contact.html" class="header-link">Contact</a>
+          <a href="admin.html" class="header-link">Admin</a>
+        </nav>
+
+        <div class="flex items-center space-x-4">
+          <input
+            id="searchBar"
+            type="text"
+            placeholder="Search..."
+            class="search-bar hidden sm:block"
+          />
+
+          <button
+            id="cart-button"
+            class="relative flex items-center bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
           >
-        </button>
-        <button id="toggle-theme" class="toggle-theme">Dark Mode</button>
+            🛒 Cart
+            <span
+              id="cart-count"
+              class="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full hidden"
+              >0</span
+            >
+          </button>
+
+          <button
+            id="toggle-theme"
+            class="bg-gray-700 text-white px-3 py-2 rounded-md hover:bg-gray-600"
+          >
+            🌙
+          </button>
+
+          <button id="mobile-menu-button" class="md:hidden text-white">
+            ☰
+          </button>
+        </div>
       </div>
+
+      <nav
+        id="mobile-menu"
+        class="flex flex-col space-y-4 mt-4 bg-gray-800 p-4 rounded-md md:hidden"
+      >
+        <a href="#home" class="header-link">Home</a>
+        <a href="about.html" class="header-link">About</a>
+        <a href="contact.html" class="header-link">Contact</a>
+        <a href="admin.html" class="header-link">Admin</a>
+      </nav>
     </header>
+
     <main class="container mx-auto mt-8">
       <div class="flex flex-wrap justify-between items-center mb-6">
         <select
@@ -130,7 +111,10 @@
         </select>
       </div>
 
-      <section class="product-grid" id="product-grid"></section>
+      <section
+        class="product-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6"
+        id="product-grid"
+      ></section>
       <div class="charts-container">
         <div class="pie-chart-container">
           <!-- <h2 class="text-2xl font-bold mb-4">Product Types Distribution</h2> -->
@@ -248,18 +232,22 @@
           productsArray.forEach((product, index) => {
             console.log(`🟢 Adding product ${index + 1}:`, product);
             const productCard = document.createElement("div");
+            productCard.className =
+              "product-card flex flex-col h-[500px] bg-white bg-opacity-10 rounded-lg shadow-xl p-4 transition duration-300 transform hover:scale-105 hover:shadow-2xl";
             productCard.classList.add("product-card");
             productCard.innerHTML = `
           <img src="${product.image}" alt="${
               product.title
-            }" class="w-full h-40 object-cover rounded-md mb-3">
-          <h3 class="product-title">${product.title}</h3>
-          <p class="product-description">${product.description.substring(
+            }" class="w-full h-52 object-cover rounded-md">
+          <h3 class="text-xl font-semibold text-white min-h-[56px] mt-3">${
+            product.title
+          }</h3>
+          <p class="text-gray-300 text-sm flex-grow overflow-hidden line-clamp-2">${product.description.substring(
             0,
             50
           )}...</p>
           <p class="product-price">$${product.price}</p>
-          <button class="add-to-cart-button bg-blue-600 text-white px-4 py-2 rounded-md w-full mt-2 hover:bg-blue-700 transition" 
+          <button class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition mt-4"
                   data-name="${product.title}" 
                   data-image="${product.image}" 
                   data-price="${product.price}">
@@ -415,6 +403,11 @@
 
         fetchProducts();
       });
+      document
+        .getElementById("mobile-menu-button")
+        .addEventListener("click", function () {
+          document.getElementById("mobile-menu").classList.toggle("hidden");
+        });
     </script>
   </body>
 </html>

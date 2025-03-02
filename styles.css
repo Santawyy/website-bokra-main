@@ -1,0 +1,39 @@
+body {
+  background: linear-gradient(to bottom right, #1a202c, #2d3748);
+  color: white;
+  min-height: 100vh;
+}
+
+.product-grid {
+  margin-top: 1.5rem;
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.product-card img {
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+  border-radius: 0.5rem;
+}
+
+.product-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.product-description {
+  flex-grow: 1;
+}
+
+.add-to-cart-button {
+  margin-top: auto;
+}
+.header-link {
+  @apply text-lg font-medium text-gray-300 hover:text-blue-400 transition-colors duration-300;
+}
+.search-bar {
+  @apply px-4 py-2 bg-gray-800 text-white-200 border border-gray-700 rounded-md focus:ring-2 focus:ring-blue-500 w-52 placeholder-gray-400;
+}
