@@ -273,7 +273,37 @@
                   data-price="${product.price}">
             Add to Cart
           </button>
+<div class="mt-4">
+    <h4 class="text-white font-bold">Reviews</h4>
+    <div id="reviews-${
+      product.id
+    }" class="reviews-list text-gray-300 text-sm"></div>
+
+    <input type="text" id="review-input-${
+      product.id
+    }" placeholder="Write a review..." 
+      class="w-full mt-2 p-2 rounded bg-gray-800 text-white border border-gray-600">
+
+    <div class="flex items-center mt-2">
+      <select id="rating-${
+        product.id
+      }" class="bg-gray-800 text-white border border-gray-600 p-1 rounded">
+        <option value="5">⭐️⭐️⭐️⭐️⭐️</option>
+        <option value="4">⭐️⭐️⭐️⭐️</option>
+        <option value="3">⭐️⭐️⭐️</option>
+        <option value="2">⭐️⭐️</option>
+        <option value="1">⭐️</option>
+      </select>
+      <button onclick="submitReview(${
+        product.id
+      })" class="ml-2 bg-green-500 px-3 py-1 text-white rounded hover:bg-green-600">
+        Submit
+      </button>
+    </div>
+  </div>
+
         `;
+
             productGrid.appendChild(productCard);
           });
 
@@ -423,6 +453,59 @@
 
         fetchProducts();
       });
+
+      function submitReview(productId) {
+        const reviewInput = document.getElementById(
+          `review-input-${productId}`
+        );
+        const ratingInput = document.getElementById(`rating-${productId}`);
+        const reviewText = reviewInput.value.trim();
+        const rating = ratingInput.value;
+
+        if (!reviewText) {
+          alert("Please write a review before submitting!");
+          return;
+        }
+
+        const reviews = JSON.parse(localStorage.getItem("reviews")) || {};
+        if (!reviews[productId]) {
+          reviews[productId] = [];
+        }
+
+        reviews[productId].push({ text: reviewText, rating: rating });
+        localStorage.setItem("reviews", JSON.stringify(reviews));
+
+        reviewInput.value = "";
+        displayReviews(productId);
+      }
+
+      function displayReviews(productId) {
+        const reviewList = document.getElementById(`reviews-${productId}`);
+        const reviews = JSON.parse(localStorage.getItem("reviews")) || {};
+
+        reviewList.innerHTML = "";
+
+        if (reviews[productId]) {
+          reviews[productId].forEach((review) => {
+            const reviewItem = document.createElement("div");
+            reviewItem.className = "mt-2 p-2 bg-gray-900 rounded text-white";
+            reviewItem.innerHTML = `
+        <p>${review.text}</p>
+        <p class="text-yellow-400">⭐ ${review.rating} / 5</p>
+      `;
+            reviewList.appendChild(reviewItem);
+          });
+        }
+      }
+
+      function loadReviews() {
+        const reviews = JSON.parse(localStorage.getItem("reviews")) || {};
+        Object.keys(reviews).forEach((productId) => {
+          displayReviews(productId);
+        });
+      }
+
+      document.addEventListener("DOMContentLoaded", loadReviews);
     </script>
   </body>
 </html>
